@@ -1,0 +1,37 @@
+---
+bibliography: references.bib
+---
+
+\[@solsona2020
+
+[@hammarström2019]
+
+@article{sorli2024,
+
+author = {Nadine Sørli},
+
+title = {Styrketrening – Hva er styrketrening, og hvorfor burde du trene styrke?}, journal = {Hardworkout},
+
+year = {2024}, month = {May},
+
+url = {[https://hardworkout.no/styrketrening-hva-er-styrketrening-og-hvorfor-burde-du-trene-styrke/},](https://hardworkout.no/styrketrening-hva-er-styrketrening-og-hvorfor-burde-du-trene-styrke/},)
+
+note = {Oppdatert 23. juli 2024} }
+
+[@westcott2012]
+
+[@faigenbaum2023a]
+
+[@wolfe2006]
+
+@article{munk2024,
+
+author = {Rikke Munk and Christina Gjestvang}, '
+
+title = {Styrketrening},
+
+year = {2024},
+
+url = {[https://sml.snl.no/styrketrening},](https://sml.snl.no/styrketrening},)
+
+note = {Hentet 9. november 2024}, publisher = {Store medisinske leksikon} }

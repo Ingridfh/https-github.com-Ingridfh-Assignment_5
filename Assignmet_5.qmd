@@ -1,0 +1,201 @@
+---
+title: "Assignment_5"
+author: "Ingrid"
+format: 
+  html:
+    toc: true          # Aktiverer innholdsfortegnelse
+    toc-depth: 3       # Justerer dybden på innholdsfortegnelsen (1–6)
+    toc-title: "Innholdsfortegnelse"
+    code-fold: true    # Gjør det mulig å skjule kodeseksjoner
+    echo: false        # Skjuler uønsket output
+    reference-location: document  # Plasserer referanser på slutten av dokumentet
+execute:
+  warning: false       # Skjuler advarsler
+  error: false         # Skjuler feil
+editor_options:
+  chunk_output_type: console  # Spesifiserer hvordan output fra kodeblokker skal vises
+bibliography: references.bib      # Referer til en BibTeX-fil med referansene dine
+
+---
+
+```{r}
+
+library(tidyverse); library(exscidata); library(lme4)
+
+# Load data
+dat <- dxadata %>%
+  select(participant:include, lean.left_leg, lean.right_leg) %>%
+        
+        # Extract leg specific data
+  pivot_longer(names_to = "leg", 
+               values_to = "lean.mass", 
+               cols = lean.left_leg:lean.right_leg) %>%
+  mutate(leg = if_else(leg == "lean.left_leg", "L", "R"), 
+         sets = if_else(multiple == leg, "multiple", "single")) %>%
+  select(participant, time, sex, include, sets, leg, lean.mass) %>%
+        # Filter only included participants
+        filter(include == "incl") %>%
+        # Make data set wider by time 
+        
+        pivot_wider(names_from = "time", 
+                    values_from = "lean.mass") %>%
+        # Calculate change score
+        
+        mutate(change = post - pre) %>%
+        
+        # Keep change score and make it wider by sets
+        select(participant:sets, change) %>%
+        pivot_wider(names_from = sets, values_from = change) %>%
+        
+  print()
+
+```
+
+```{r}
+
+# Load data
+dat <- dxadata %>%
+  select(participant:include, lean.left_leg, lean.right_leg) %>%
+        
+        # Extract leg specific data
+  pivot_longer(names_to = "leg", 
+               values_to = "lean.mass", 
+               cols = lean.left_leg:lean.right_leg) %>%
+  mutate(leg = if_else(leg == "lean.left_leg", "L", "R"), 
+         sets = if_else(multiple == leg, "multiple", "single")) %>%
+  select(participant, time, sex, include, sets, leg, lean.mass) %>%
+        # Filter only included participants
+        filter(include == "incl") %>%
+        # Fix time factor 
+        mutate(time = factor(time, levels = c("pre", "post"))) %>%
+        
+  print()
+```
+
+## Introduksjon
+
+Tidligere ble vekttrening sett på som noe for spesielt sterke menn i idretter som styrkeløft, vektløfting og kroppsbygging. Disse utøverne trengte stor styrke og muskelmasse for å lykkes, og kroppene deres responderte godt på tung trening med vekter. Vanlige folk så liten grunn til å trene med vekter, og mange idrettsutøvere fryktet at det kunne hemme prestasjonene deres (@westcott2012).
+
+I senere tid har det blitt gitt en økende oppmerksomhet på aldersrelatert muskeltap og tilhørende problemer som beintap, metabolsk nedgang, fett økning og økt dødelighet blant en stillesittende befolkning. Fordi det er bevist at styrketrening styrker muskler i alle aldre, har forskere anbefalt styrketrening som et viktig folkehelsetiltak (@westcott2012).
+
+Dagens barn og unge er fysisk svakere enn tidligere generasjoner, og de fleste oppnår ikke de anbefalte 60 minuttene med moderat til intensiv fysisk aktivitet daglig.
+
+Bare en av fem ungdommer følger internasjonale retningslinjer for fysisk aktivitet, inkludert aerob og muskelstyrkene øvelser. Samtidig synker kondisjonsnivået og muskelstyrken globalt blant unge. Svakere ungdom har større risiko for skader og begrensninger i daglig aktivitet. 
+
+Målt fysisk form reduseres, idrettsdeltakelse blant ungdom minker, og kostnadene ved aktivitetsrelaterte skader er høye.
+
+Tiltak som bygger muskelstyrke og motoriske ferdigheter er viktige for å forbedre unges helse. Lav styrke i barndommen vedvarer ofte inn i voksenlivet (@faigenbaum2023a).
+
+Betydningen av muskelmasse, styrke og metabolsk funksjon for både trening og daglige aktiviteter er kjent. 
+Muskler spiller også en sentral rolle i kroppens proteinmetabolisme, spesielt ved stress. Endringer i muskelmetabolismen er knyttet til utviklingen av flere vanlige sykdommer, og derfor kan forebygging av muskeltap være viktig (@wolfe2006).
+
+Styrketrening er en effektiv treningsform som bygger muskelstyrke og muskelmasse. Målet er å forbedre kroppens funksjon, øke kroppskontrollen og forebygge skader. Det er en viktig del av en treningsrutine for alle, uansett alder eller nivå (@sorli2024).
+
+Styrketrening innebærer fysisk arbeid mot motstand. Detet kan være vekter, kroppsvekt eller maskiner. Dette brukes for å forbedre prestasjon, helse og rehabilitering. Det inkluderer trening for å utvikle eller vedlikeholde evnen til å produsere maksimal kraft ved en spesifikk hastighet.
+
+Styrketrening gir ikke bare økt styrke og muskelmasse, men har også positive effekter på hjerte- og karfunksjon, blodsukkerregulering, vektkontroll, beintetthet, depresjon, angst og livskvalitet. Disse effektene kan bidra til å forebygge sykdom (@munk2024).
+
+
+# Hvordan skape muskelvekst?
+
+To mekanismer ved styrketrening gir muskelvekst:
+
+Mekanisk drag
+Et stort mekanisk drag i muskelstrukturen ser ut til å være en av de viktigste stimuliene for de prosessene som leder til hypertrofi i muskulaturen som belastes ved styrketrening. Både størrelsen på det mekaniske draget (hvor tungt vi løfter) og tiden dette draget varer (hvor mange repetisjoner og serier vi gjør) påvirker størrelsen på signalet til muskelvekst. Maksimal styrketrening (<5 repetisjoner) hvor man løfter tungt (ca. 85 – 100 % av 1RM) kan bidra til høyt mekanisk drag @munk2024.
+
+Metabolsk stress
+Metabolsk stress, som skjer ved redusert blodtilførsel til den muskelen som arbeider, kan også stimulere til muskelvekst. For et høyt metabolsk stress kan det være hensiktsmessig å trene med litt lettere vekter (70-85% av 1RM) med 6-12 repetisjoner, og med kortere pauser (1–2 min).
+Treningsprogram som både gir et stort mekanisk drag og metabolsk stress er gode protokoller hvis muskelvekst er hovedmålet med styrketreningen @munk2024.
+
+Formål med studien: 
+Vil høyere treningsvolum føre til større økning i muskelmasse og styrke?
+
+
+## Metode
+
+Deltakerne ble informert om mulige risikoer og ubehag ved studien og ga sitt informerte samtykke før deltakelse. Studiens design var forhåndsregistrert og ble godkjent av en etisk komite ved Høgskolen i Lillehammer, avdeling for idrettsvitenskap. 
+
+Alle prosedyrer ble gjennomført i tråd med Helsinki-deklarasjonen.
+
+Totalt 41 mannlige og kvinnelige deltakere ble rekruttert, med inklusjonskriteriene at de skulle være ikke-røykere og i alderen 18-40 år. 
+
+# Eksklusjonskriterier:
+
+- Intoleranse for lokalbedøvelse.
+
+- Styrketreningserfaring på mer enn en økt per uke det siste året.
+
+- Ingen tidligere eller pågående skader som kunne svekke muskelstyrken.
+
+- Ingen bruk av medikamenter som kunne påvirke treningsresponsen. 
+
+- Under dataanalysen ble syv deltakere ekskludert, da de ikke fullførte minst 85 % av de planlagte treningsøktene på grunn av smerter, skade eller manglende overholdelse av studieprotokollen.
+
+- Studieintervensjonen hadde en varighet på 12 uker og besto av fullkroppsstyrketrening. 
+Hver deltakers to bein ble tildelt ulike treningsvolumer (ett sett versus tre sett) i tilfeldig rekkefølge. 
+
+Muskelstyrke ble målt ved baseline og underveis (ukene 3, 5 og 9) samt etter intervensjonen. Kroppssammensetning ble målt før og etter treningsperioden
+
+## Spesifikke beskrivelser 
+
+# Styrketester:
+
+Muskelstyrke ble målt med en dynamometer (Cybex 6000) for både isokinetiske og isometriske tester av unilaterale kne-ekstensjonsøvelser ved tre hastigheter (60, 120, og 240 grader).
+
+Deltakerne fikk to forsøk på hastighet 60 og tre forsøk på de andre to, med høyeste verdi brukt i analysene. 
+
+Maksimal styrke ble også vurdert som et repetisjonsmaksimum (1RM) i unilateral beinpress og kne-ekstensjon.
+
+Testene ble utført med en progressiv økning i motstand til deltakerne ikke klarte full bevegelsesbane. For hver øvelse ble høyeste løft registrert som 1RM, med inntil seks forsøk per deltaker.
+
+# Kroppssammensetning og muskelareal:
+
+Kneekstensorenes muskelareal ble målt med MRI ved baseline og etter intervensjonen.
+
+Kroppssammensetning ble målt med DXA (dual-energy X-ray absorptiometri), og deltakerne ble instruert til å møte fastende i 2 timer og avstå fra kraftig fysisk aktivitet i 48 timer før målingene.
+
+# Hormon- og vevsprøver:
+
+Blodprøver ble samlet ved flere tidspunkter for å måle hormonnivåene av testosteron, kortisol, veksthormon og IGF-1 (insulin-like growth factor 1). 
+
+Muskelprøver ble tatt fra begge lårmuskler (m. vastus lateralis) under lokalbedøvelse med en 12-gauge nål. 
+
+Biopsier ble tatt om morgenen etter en standardisert frokost, og deltakerne ble bedt om å spise like måltider de siste 24 timene og unngå hard trening de siste 48 timene. 
+
+Prøvene før treningsøkten ble tatt to dager etter fjerde treningsøkt, og etter intervensjonen ble prøvene tatt 3 og 6 dager etter siste trening og styrketest. 
+
+Prøver ble raskt renset og oppbevart i iskald saltløsning.
+
+Prøver til immunohistokjemi ble fiksert i formalin, mens prøver til protein- og RNA-analyser ble hurtigfrosset ved -80 grader for senere analyser.
+
+
+
+## Dataanalyse og statistikk
+
+Data ble analysert ved bruk av beskrivende statistikk som gjennomsnitt og standardavvik (SD), samt konfidensintervaller. For sammenligninger mellom gruppene og for å evaluere endringer over tid, ble det brukt ANOVA (analyser av varians) med gjentatte målinger, med statistisk signifikans satt til p < 0,05.
+
+## Sammendrag av hovedfunn
+
+Etter 12 uker med styrketrening oppnådde deltakerne en betydelig økning i både muskelstyrke (25 %) og muskelmasse (4,4 %). 
+
+Studiet fant at trening med flere sett per øvelse (multiple-set) ga bedre resultater på styrke og muskelvekst enn enkeltsatstrening (single-set), med særlig større effekt på muskeltykkelse (tverrsnitts areal, CSA) i knestrekkeren. Multiple-set trening resulterte også i en mer omfattende omdanning av type IIX-fibre til type IIA-fibre sammenlignet med single-set. I tillegg aktiverte multiple-set trening proteinsynteseregulerende signalveier mer effektivt, inkludert mTORC1, noe som indikerer økt ribosomal biogenese og muskelhypertrofi.
+
+
+## Diskusjon
+Denne studien har vist at flersetts styrketrening gir større økninger i muskelstyrke og masse sammenlignet med enkelsetts trening. Dette støttes av tidligere meta-analyser som fremhever moderate treningsvolumer som gunstigere enn lavvolumtrening. 
+
+Økningen i muskelstyrke og masse ble knyttet til biologiske indikatorer på muskelvekst, som overgang fra muskelfiber type IIX til type IIA, økt fosforylering av S6K1 og ribosomal protein S6 etter trening, samt høyere nivåer av c-Myc og ribosomal RNA. 
+
+Studien viser dermed at økt treningsvolum fører til mer omfattende molekylære og fysiologiske tilpasninger, noe som kan spille en viktig rolle i muskelvekstprosesser.
+
+En viktig faktor for økt muskelmasse og styrke i denne studien var økningen i ribosomal RNA og total RNA, noe som antyder at ribosomal biogenese spiller en rolle i volumavhengige muskeltilpasninger. Tidlig akkumulering av ribosomal innhold kan være viktig for treningsinduserte muskeltilpasninger, spesielt for utrente deltakere, der slike endringer ofte skjer i løpet av de første ukene med styrketrening. Selv om enkelte biomarkører knyttet til mTORC1-aktivering ble målt, hadde disse varierende resultater som kunne påvirkes av tidspunktene for målingene.
+
+Totalt sett fremhever studien at trening med høyere volum gir større fremgang i både muskelmasse og styrke, samt bidrar til betydelige molekylære tilpasninger som er viktige for hypertrofiske prosesser.
+
+
+## Konklusjon
+Studien konkluderer med at multiple-set styrketrening gir større forbedringer i muskelstyrke, muskelmasse og muskeltilpasninger enn single-set trening. For deltakerne som oppnådde størst fordel av flere sett, var forhøyede nivåer av total-RNA en sterk indikator på ekstra muskelvekst og styrke økning. Dette understøtter anbefalingen om flere sett per øvelse for best mulig styrke- og muskelutvikling.
+
+
+
+## Gjennomføring av dataanalysen
