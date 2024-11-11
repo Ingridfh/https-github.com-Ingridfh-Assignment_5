@@ -2,9 +2,7 @@
 bibliography: references.bib
 ---
 
-\[@solsona2020
-
-[@hammarström2019]
+[@solsona2020a]
 
 @article{sorli2024,
 
@@ -14,7 +12,7 @@ title = {Styrketrening – Hva er styrketrening, og hvorfor burde du trene styrk
 
 year = {2024}, month = {May},
 
-url = {[https://hardworkout.no/styrketrening-hva-er-styrketrening-og-hvorfor-burde-du-trene-styrke/},](https://hardworkout.no/styrketrening-hva-er-styrketrening-og-hvorfor-burde-du-trene-styrke/},)
+url = {<https://hardworkout.no/styrketrening-hva-er-styrketrening-og-hvorfor-burde-du-trene-styrke/%7D,>
 
 note = {Oppdatert 23. juli 2024} }
 
@@ -32,6 +30,10 @@ title = {Styrketrening},
 
 year = {2024},
 
-url = {[https://sml.snl.no/styrketrening},](https://sml.snl.no/styrketrening},)
+url = {<https://sml.snl.no/styrketrening%7D,>
 
-note = {Hentet 9. november 2024}, publisher = {Store medisinske leksikon} }
+note = {Hentet 9. november 2024}, publisher = {Store medisinske leksikon}
+
+}
+
+[@hammarström2020]
